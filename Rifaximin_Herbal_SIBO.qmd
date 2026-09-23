@@ -1,0 +1,48 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+# Simple Chi Square Tests to Compare Efficacy of Rifaximin vs. Herbal Treatments for SIBO
+
+Data originating from [(Chedid, et al., 2014)](10.7453/gahmj.2014.019).
+
+Treatment of patients with SIBO is often relegated to the off-label use of Rifaximin, which has a less than ideal remission rate. Patients are increasingly interested in the use of alternative medicines to treat SIBO, which encourages the examination of their efficacy in comparison to current standards of care. Chedid et al. set out to examine the real-world effectiveness of herbal treatments vs. rifaximin in the remission of SIBO, as measured by repeat lactulose breath tests (LBT).
+
+```{r}
+N <- 396
+#of the 396 patients identified w/ the inclusion critieria, 104 had follow-up LBTs.
+n <- 104
+
+#patients that took a 4 week herbal treatment course
+nherbal <- 37
+nherbal_remission <- 17/nherbal
+
+#patients that took a 4 week 1200mg course of rifaximin
+
+nrifaximin <- 67
+nrifax_remission <- 23/nrifaximin
+
+```
