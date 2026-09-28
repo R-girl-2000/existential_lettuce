@@ -4,45 +4,124 @@ format: html
 editor: visual
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
-```
-
-You can add options to executable code like this
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
-
 # Simple Chi Square Tests to Compare Efficacy of Rifaximin vs. Herbal Treatments for SIBO
 
 Data originating from [(Chedid, et al., 2014)](10.7453/gahmj.2014.019).
 
-Treatment of patients with SIBO is often relegated to the off-label use of Rifaximin, which has a less than ideal remission rate. Patients are increasingly interested in the use of alternative medicines to treat SIBO, which encourages the examination of their efficacy in comparison to current standards of care. Chedid et al. set out to examine the real-world effectiveness of herbal treatments vs. rifaximin in the remission of SIBO, as measured by repeat lactulose breath tests (LBT).
+Treatment of patients with SIBO is often relegated to the off-label use of Rifaximin, which has a poor remission rate. Patients are increasingly interested in the use of alternative medicines to treat SIBO, which encourages the examination of their efficacy in comparison to current standards of care. Chedid et al. set out to examine the real-world effectiveness of herbal treatments vs. rifaximin in the remission of SIBO, as measured by repeat lactulose breath tests (LBT). The sample for this analysis consisted of EHRs from gastroenterology patients at a tertiary care gastroenterology practice.
+
+Three hundred and ninety-six patients in were identified that met the inclusion criteria and did not meet the exclusion criteria, of which 104 completed a follow up LBT.
 
 ```{r}
+#| echo: false
+Patients <- 396
+kept <- 104
+not_kept <- (Patients - kept)
+
+#make a pie chart using code from https://r-graph-gallery.com/128-ring-or-donut-plot.html
+
+data<-data.frame(Group = c("Kept", "Not Kept"), count = c(kept, not_kept))
+#compute percentages
+data$percentage<- 100*(data$count/sum(data$count))
+#compute the cumulative percentages (top of each rectange)
+
+data$ymax = cumsum(data$percentage)
+
+#compute the bottom of each rectange, uses the top value from the row above. 
+
+data$ymin = c(0, head(data$ymax, n = -1))
+
+# Compute label position, put in the middle of each bar
+data$labelPosition <- (data$ymax + data$ymin) / 2
+
+# Compute a good label
+data$label <- paste0(data$Group, "\n value: ", data$count)
+
+
+library(ggplot2)
+ggplot(data, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=Group)) +
+  geom_rect() +
+  geom_text( x=2, aes(y=labelPosition, label=label, color=Group), size=4) + # x here controls label position (inner / outer)
+  scale_fill_brewer(palette=4) +
+  scale_color_grey(start=.5, end = .3) +
+  coord_polar(theta="y") +
+  xlim(c(-1, 4)) +
+  theme_void() +
+  theme(legend.position = "none")
+
+
+```
+
+Patients were originally given two open-label treatment options based on their individual treatment preference; two 200 mg rifaximin tablets three times daily (TID), or two capsuales twice daily of the commercial herbal preparations; Dysobocide and FC CIdal (Biotics Rsearch Laboratories, Rosenberg Texas) or Candibactin-AR and Candibactin BR (Metagenics, INc, Aliso Viejo, California) for 4 consecutive weeks immediately followed by a follow-up LBT.
+
+The primary outcome was the proportion of patients in each treatment regimen who had a negative post-treatment LBT.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+
+library(kableExtra)
+library(tidyr)
+library(knitr)
+library(dplyr)
+
 N <- 396
 #of the 396 patients identified w/ the inclusion critieria, 104 had follow-up LBTs.
 n <- 104
 
 #patients that took a 4 week herbal treatment course
 nherbal <- 37
-nherbal_remission <- 17/nherbal
+nherbal_remission <- 17
+nherbal_percent <- (round(nherbal_remission/nherbal,4)*100)
 
 #patients that took a 4 week 1200mg course of rifaximin
 
 nrifaximin <- 67
-nrifax_remission <- 23/nrifaximin
+nrifax_remission <- 23
+nrifax_percent<- (round(nrifax_remission/nrifaximin, 4)*100)
 
+
+remission_rates<- data.frame(Treatment = c("Rifaximin", "Herbal"), n = c(nrifaximin, nherbal), Remission = c(nrifax_remission, nherbal_remission), 
+                             Percentage_Responders = c(nrifax_percent, nherbal_percent))
+
+remission_rates$No_Response <- c((nrifaximin- nrifax_remission), (nherbal- nherbal_remission))
+
+remission_rates<- remission_rates |>
+  select(Treatment,Remission, No_Response, n, Percentage_Responders)
+
+remission_rates2 <- remission_rates|>
+  select(Treatment,Remission, No_Response, Percentage_Responders)
+
+remission_rates2|>
+  kable(format = "html", caption = "Remission Rates for Sibo Treatments")
+
+
+```
+
+select(Treatment,Remission, No_Response, n, Percentage_Responders)
+
+Although the herbal treatments had a higher remission rate than Rifaximin, the unequal sample sizes make it unclear if there is a statistically significant advantage to using herbal treatments compared to Rifaximin. Using a Chi-Square Test of Independence:
+
+$H_{0} :$ In the population, the proportion of Rifaximin responders is equal to that of Herbal treatment responders
+
+$H_{a} :$ In the population, the proportions are not equal
+
+```{r}
+#| echo: false
+row_labels <- c("Rifaximin", "Herbal")
+col_labels <- c("Remission", "Non-Responder")
+
+tab <- matrix(c(nrifax_remission, nherbal_remission,
+                (nrifaximin - nrifax_remission),(nherbal - nherbal_remission)),
+              dimnames = list(row_labels, col_labels), nrow= 2)
+
+
+
+# Chi-square test of independence
+chi_res <-chisq.test(tab, correct = F)
+chi_res
+
+  
 ```
