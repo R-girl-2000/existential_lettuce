@@ -1,6 +1,7 @@
 ---
-title: "Untitled"
+title: "Treatments for SIBO"
 format: html
+code-fold: True
 editor: visual
 ---
 
@@ -52,7 +53,7 @@ ggplot(data, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=Group)) +
 
 ```
 
-Patients were originally given two open-label treatment options based on their individual treatment preference; two 200 mg rifaximin tablets three times daily (TID), or two capsuales twice daily of the commercial herbal preparations; Dysobocide and FC CIdal (Biotics Rsearch Laboratories, Rosenberg Texas) or Candibactin-AR and Candibactin BR (Metagenics, INc, Aliso Viejo, California) for 4 consecutive weeks immediately followed by a follow-up LBT.
+Patients were originally given two open-label treatment options based on their individual treatment preference; two 200 mg rifaximin tablets three times daily (TID), or two capsules twice daily of the commercial herbal preparations; Dysobocide and FC CIdal (Biotics Rsearch Laboratories, Rosenberg Texas) or Candibactin-AR and Candibactin BR (Metagenics, Inc, Aliso Viejo, California) for 4 consecutive weeks immediately followed by a follow-up LBT.
 
 The primary outcome was the proportion of patients in each treatment regimen who had a negative post-treatment LBT.
 
@@ -61,11 +62,11 @@ The primary outcome was the proportion of patients in each treatment regimen who
 #| warning: false
 #| message: false
 
-
 library(kableExtra)
 library(tidyr)
 library(knitr)
 library(dplyr)
+library(broom)
 
 N <- 396
 #of the 396 patients identified w/ the inclusion critieria, 104 had follow-up LBTs.
@@ -82,6 +83,7 @@ nrifaximin <- 67
 nrifax_remission <- 23
 nrifax_percent<- (round(nrifax_remission/nrifaximin, 4)*100)
 
+#make crosstabs table
 
 remission_rates<- data.frame(Treatment = c("Rifaximin", "Herbal"), n = c(nrifaximin, nherbal), Remission = c(nrifax_remission, nherbal_remission), 
                              Percentage_Responders = c(nrifax_percent, nherbal_percent))
@@ -100,13 +102,11 @@ remission_rates2|>
 
 ```
 
-select(Treatment,Remission, No_Response, n, Percentage_Responders)
+Although the herbal treatments had a higher remission rate than Rifaximin, the unequal sample sizes make it unclear if there is a statistically significant advantage to using herbal treatments compared to Rifaximin. Using a Chi-Square Test of Homogenity:
 
-Although the herbal treatments had a higher remission rate than Rifaximin, the unequal sample sizes make it unclear if there is a statistically significant advantage to using herbal treatments compared to Rifaximin. Using a Chi-Square Test of Independence:
+$H_{0} :$ The proportion of Rifaximin responders is equal to that of herbal treatment responders
 
-$H_{0} :$ In the population, the proportion of Rifaximin responders is equal to that of Herbal treatment responders
-
-$H_{a} :$ In the population, the proportions are not equal
+$H_{a} :$ Between the populations, the proportions are not equal
 
 ```{r}
 #| echo: false
@@ -119,9 +119,83 @@ tab <- matrix(c(nrifax_remission, nherbal_remission,
 
 
 
-# Chi-square test of independence
+# Chi-square test of homogeneity
 chi_res <-chisq.test(tab, correct = F)
-chi_res
+
+tidy_chi <- tidy(chi_res)
+kable(tidy_chi, caption = "Chi-Square Test Results")
 
   
 ```
+
+Based on the results of the Chi-Square test, it is clear that treatment with the herbal protocols was not statistically superior to that of treatment with Rifaximin.
+
+So how do the odds of being a responder on herbal treatments differ from those of being on rifaximin?
+
+**Odds Ratio**
+
+Chedid et al. chose to adjust the odds of responding to either treatment by balancing covariates across their data set. In doing so, they obtained an odds ratio of 1.85 (C.I. of 0.77-4.41, *p* = .17). Not having access to the patient-level data to perform covariate adjustment, the expected odds ratio based on the un-adjusted data is as follows:
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+p_herbal <- nherbal_percent/100
+p_rifax<- nrifax_percent/100
+
+#odds of being a responder on herbal or rifaximin treatments
+
+odds_herbal<- p_herbal/(1-p_herbal)
+odds_rifax<- p_rifax/(1-p_rifax)
+
+#odds ratio, herbal to rifaximin
+
+odds_ratio = odds_herbal/odds_rifax
+
+
+#using Fisher's exact test on the data, since 2x2 contigency table
+
+res<- fisher.test(tab)
+herbal_vs_rifax <- 1+ res$estimate
+
+
+#also do so using epitools, which looks nicer
+library(epitools)
+
+or<- oddsratio(tab, method= "fisher")
+
+#make table the other way to get odds of being an herbal responder vs. a Rifaxin responder. 
+row_labels2 <- c("Herbal", "Rifaximin")
+col_labels2 <- c("Remission", "Non-Responder")
+
+tab2 <- matrix(c(nherbal_remission,nrifax_remission
+               ,(nherbal - nherbal_remission),  (nrifaximin - nrifax_remission)),
+              dimnames = list(row_labels2, col_labels2), nrow= 2)
+
+or2<-oddsratio(tab2, method ="fisher")
+
+#make nice table
+or_kable_measure <- kable(or2$measure, caption = "OR of Responding to Herbal:Rifaximin")
+or_kable_measure
+
+or_kable_p.value <- kable(or2$p.value, caption = "OR of Responding to Herbal:Rifaximin")
+or_kable_p.value
+```
+
+Without adjusting for covariates, the odds of responding to the herbal treatment regimine are 1.6 times greater than those of responding to Rifaximin. Though apparently greater, the increase in odds is continues to reflect statistical non-significance.
+
+A perhaps more intuitive understanding can be drawn from the risk ratio of responding to herbal treatments, when compared to responding to rifaximin.
+
+```{r}
+#relative risk is prob being a responder in group a/prob being a responder in group b
+
+RR_Herbal <- p_herbal/p_rifax
+RR_Herbal
+
+#confidence interval
+
+
+```
+
+The lack of statistical significance in the difference between herbal treatment and Rifaximin does not negate the potential for clinically significant differences.

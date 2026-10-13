@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Untitled</title>
+<title>Treatments for SIBO</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +25,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -81,7 +116,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Untitled</h1>
+<h1 class="title">Treatments for SIBO</h1>
 </div>
 
 
@@ -112,7 +147,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Patients were originally given two open-label treatment options based on their individual treatment preference; two 200 mg rifaximin tablets three times daily (TID), or two capsuales twice daily of the commercial herbal preparations; Dysobocide and FC CIdal (Biotics Rsearch Laboratories, Rosenberg Texas) or Candibactin-AR and Candibactin BR (Metagenics, INc, Aliso Viejo, California) for 4 consecutive weeks immediately followed by a follow-up LBT.</p>
+<p>Patients were originally given two open-label treatment options based on their individual treatment preference; two 200 mg rifaximin tablets three times daily (TID), or two capsules twice daily of the commercial herbal preparations; Dysobocide and FC CIdal (Biotics Rsearch Laboratories, Rosenberg Texas) or Candibactin-AR and Candibactin BR (Metagenics, Inc, Aliso Viejo, California) for 4 consecutive weeks immediately followed by a follow-up LBT.</p>
 <p>The primary outcome was the proportion of patients in each treatment regimen who had a negative post-treatment LBT.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -143,19 +178,111 @@ window.Quarto = {
 </table>
 </div>
 </div>
-<p>select(Treatment,Remission, No_Response, n, Percentage_Responders)</p>
-<p>Although the herbal treatments had a higher remission rate than Rifaximin, the unequal sample sizes make it unclear if there is a statistically significant advantage to using herbal treatments compared to Rifaximin. Using a Chi-Square Test of Independence:</p>
-<p><span class="math inline">\(H_{0} :\)</span> In the population, the proportion of Rifaximin responders is equal to that of Herbal treatment responders</p>
-<p><span class="math inline">\(H_{a} :\)</span> In the population, the proportions are not equal</p>
+<p>Although the herbal treatments had a higher remission rate than Rifaximin, the unequal sample sizes make it unclear if there is a statistically significant advantage to using herbal treatments compared to Rifaximin. Using a Chi-Square Test of Homogenity:</p>
+<p><span class="math inline">\(H_{0} :\)</span> The proportion of Rifaximin responders is equal to that of herbal treatment responders</p>
+<p><span class="math inline">\(H_{a} :\)</span> Between the populations, the proportions are not equal</p>
 <div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Chi-Square Test Results</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">parameter</th>
+<th style="text-align: left;">method</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1.359258</td>
+<td style="text-align: right;">0.2436662</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">Pearson’s Chi-squared test</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Based on the results of the Chi-Square test, it is clear that treatment with the herbal protocols was not statistically superior to that of treatment with Rifaximin.</p>
+<p>So how do the odds of being a responder on herbal treatments differ from those of being on rifaximin?</p>
+<p><strong>Odds Ratio</strong></p>
+<p>Chedid et al.&nbsp;chose to adjust the odds of responding to either treatment by balancing covariates across their data set. In doing so, they obtained an odds ratio of 1.85 (C.I. of 0.77-4.41, <em>p</em> = .17). Not having access to the patient-level data to perform covariate adjustment, the expected odds ratio based on the un-adjusted data is as follows:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>OR of Responding to Herbal:Rifaximin</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">lower</th>
+<th style="text-align: right;">upper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Herbal</td>
+<td style="text-align: right;">1.000000</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rifaximin</td>
+<td style="text-align: right;">1.618377</td>
+<td style="text-align: right;">0.6584998</td>
+<td style="text-align: right;">3.986978</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>OR of Responding to Herbal:Rifaximin</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">midp.exact</th>
+<th style="text-align: right;">fisher.exact</th>
+<th style="text-align: right;">chi.square</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Herbal</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rifaximin</td>
+<td style="text-align: right;">0.2543805</td>
+<td style="text-align: right;">0.2943669</td>
+<td style="text-align: right;">0.2436662</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Without adjusting for covariates, the odds of responding to the herbal treatment regimine are 1.6 times greater than those of responding to Rifaximin. Though apparently greater, the increase in odds is continues to reflect statistical non-significance.</p>
+<p>A perhaps more intuitive understanding can be drawn from the risk ratio of responding to herbal treatments, when compared to responding to rifaximin.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#relative risk is prob being a responder in group a/prob being a responder in group b</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>RR_Herbal <span class="ot">&lt;-</span> p_herbal<span class="sc">/</span>p_rifax</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>RR_Herbal</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-    Pearson's Chi-squared test
-
-data:  tab
-X-squared = 1.3593, df = 1, p-value = 0.2437</code></pre>
+<pre><code>[1] 1.338479</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#confidence interval</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
+<p>The lack of statistical significance in the difference between herbal treatment and Rifaximin does not negate the potential for clinically significant differences.</p>
 </section>
 
 </main>
