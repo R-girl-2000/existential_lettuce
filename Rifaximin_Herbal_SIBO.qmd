@@ -1,7 +1,8 @@
 ---
 title: "Treatments for SIBO"
 format: html
-code-fold: True
+Execute: 
+  echo: false
 editor: visual
 ---
 
@@ -183,19 +184,47 @@ or_kable_p.value <- kable(or2$p.value, caption = "OR of Responding to Herbal:Rif
 or_kable_p.value
 ```
 
-Without adjusting for covariates, the odds of responding to the herbal treatment regimine are 1.6 times greater than those of responding to Rifaximin. Though apparently greater, the increase in odds is continues to reflect statistical non-significance.
+Without adjusting for covariates, the odds of responding to the herbal treatment regimine are 1.6 times greater than the odds of responding to Rifaximin. Though apparently greater, the increase in odds continues to reflect statistical non-significance.
 
-A perhaps more intuitive understanding can be drawn from the risk ratio of responding to herbal treatments, when compared to responding to rifaximin.
+A perhaps more intuitive understanding can be drawn from the risk ratio of responding to herbal treatments, compared to responding to rifaximin. This can be intuited as the ratio of the probability of responding to herbal treatments, compared to the probability of responding to rifaximin.
 
 ```{r}
+#| echo: false
 #relative risk is prob being a responder in group a/prob being a responder in group b
 
-RR_Herbal <- p_herbal/p_rifax
-RR_Herbal
+#confidence interval, use epitools package. expects r1 = placebo, c1 = no response. Have to tell it to reverse both based on how my data table is structured. 
 
-#confidence interval
+rr_herb<- riskratio(tab2, conf.level = .95, rev = "both")
+
+#make nice table
+rr_kable_measure <- kable(rr_herb$measure, caption = "RR of Responding to Herbal:Rifaximin")
+rr_kable_measure
+rr_kable_p <- kable(rr_herb$p.value, caption = "RR of Responding to Herbal:Rifaximin")
+
 
 
 ```
 
-The lack of statistical significance in the difference between herbal treatment and Rifaximin does not negate the potential for clinically significant differences.
+The probability of treatment naive patients responding to herbal treatments is 1.3 times greater than the probability of treatment naive patients responding to rifaximin, or there is a 30% increase in the relative risk of responding to herbal treatments compared to rifaximin.
+
+Importantly, of the 43 rifaximin non-responders, 24 were offered rescue treatment with herbal therapies. Fourteen of the 24 were only offered herbal treatments, and 10 were offered the choice of herbal treatments or triple antibiotics. Of the cohort of 14, 8 (57.14%) had a negative follow-up LBT. Within the cohort of 10, 6 treated with herbal therapies had a negative follow-up LBT (60%). The difference between follow up cohorts was non-significant.
+
+```{r}
+#| echo: False
+#make the non-responder table. 
+row_labels3 <- c("Herbal Rescue Only", "Herbal or Triple Antibiotics")
+col_labels3 <- c("Remission", "Non-Responder")
+non_resp<- matrix(c(8,6,6,4),
+                  dimnames = list(row_labels3, col_labels3), nrow= 2)
+
+#using Fisher's exact test on the data, since 2x2 contigency table with counts less than 5
+
+rescue<- fisher.test(non_resp)
+
+rescue_kable <- kable(non_resp, caption = "Rifaximin Non-Responders Rescue Treatment Outcomes")
+
+rescue_kable_measure <- kable(rescue$p.value, caption = "p value for difference in the odds of responding between groups")
+rescue_kable
+rescue_kable_measure
+
+```

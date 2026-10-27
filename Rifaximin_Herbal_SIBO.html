@@ -26,41 +26,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -264,25 +229,80 @@ window.Quarto = {
 </table>
 </div>
 </div>
-<p>Without adjusting for covariates, the odds of responding to the herbal treatment regimine are 1.6 times greater than those of responding to Rifaximin. Though apparently greater, the increase in odds is continues to reflect statistical non-significance.</p>
-<p>A perhaps more intuitive understanding can be drawn from the risk ratio of responding to herbal treatments, when compared to responding to rifaximin.</p>
+<p>Without adjusting for covariates, the odds of responding to the herbal treatment regimine are 1.6 times greater than the odds of responding to Rifaximin. Though apparently greater, the increase in odds continues to reflect statistical non-significance.</p>
+<p>A perhaps more intuitive understanding can be drawn from the risk ratio of responding to herbal treatments, compared to responding to rifaximin. This can be intuited as the ratio of the probability of responding to herbal treatments, compared to the probability of responding to rifaximin.</p>
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#relative risk is prob being a responder in group a/prob being a responder in group b</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>RR_Herbal <span class="ot">&lt;-</span> p_herbal<span class="sc">/</span>p_rifax</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>RR_Herbal</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.338479</code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>RR of Responding to Herbal:Rifaximin</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">lower</th>
+<th style="text-align: right;">upper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Rifaximin</td>
+<td style="text-align: right;">1.000000</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Herbal</td>
+<td style="text-align: right;">1.338425</td>
+<td style="text-align: right;">0.8269648</td>
+<td style="text-align: right;">2.166214</td>
+</tr>
+</tbody>
+</table>
 </div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#confidence interval</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
-<p>The lack of statistical significance in the difference between herbal treatment and Rifaximin does not negate the potential for clinically significant differences.</p>
+<p>The probability of treatment naive patients responding to herbal treatments is 1.3 times greater than the probability of treatment naive patients responding to rifaximin, or there is a 30% increase in the relative risk of responding to herbal treatments compared to rifaximin.</p>
+<p>Importantly, of the 43 rifaximin non-responders, 24 were offered rescue treatment with herbal therapies. Fourteen of the 24 were only offered herbal treatments, and 10 were offered the choice of herbal treatments or triple antibiotics. Of the cohort of 14, 8 (57.14%) had a negative follow-up LBT. Within the cohort of 10, 6 treated with herbal therapies had a negative follow-up LBT (60%). The difference between follow up cohorts was non-significant.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Rifaximin Non-Responders Rescue Treatment Outcomes</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Remission</th>
+<th style="text-align: right;">Non-Responder</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Herbal Rescue Only</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Herbal or Triple Antibiotics</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>p value for difference in the odds of responding between groups</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </section>
 
 </main>
